@@ -7,65 +7,65 @@
     <title>Registro de Aprendices</title>
 
     <style>
-        body{
+        body {
             font-family: Arial;
-            background:#f4f4f4;
-            margin:40px;
+            background: #f4f4f4;
+            margin: 40px;
         }
 
-        .contenedor{
-            width:400px;
-            margin:auto;
+        .contenedor {
+            width: 400px;
+            margin: auto;
         }
 
-        form{
-            background:white;
-            padding:20px;
-            border-radius:10px;
-            box-shadow:0px 0px 10px gray;
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px gray;
         }
 
-        input{
-            width:100%;
-            padding:10px;
-            margin-top:10px;
-            border:1px solid #ccc;
-            border-radius:5px;
-            box-sizing:border-box;
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
         }
 
-        button{
-            margin-top:15px;
-            padding:10px;
-            width:100%;
-            background:#28a745;
-            color:white;
-            border:none;
-            border-radius:5px;
-            cursor:pointer;
+        button {
+            margin-top: 15px;
+            padding: 10px;
+            width: 100%;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
 
-        button:hover{
-            background:#218838;
+        button:hover {
+            background: #218838;
         }
 
-        h2{
-            color:#333;
-            text-align:center;
+        h2 {
+            color: #333;
+            text-align: center;
         }
 
-        .mensaje-ok{
-            color:green;
-            text-align:center;
-            margin-top:15px;
-            font-weight:bold;
+        .mensaje-ok {
+            color: green;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
         }
 
-        .mensaje-error{
-            color:red;
-            text-align:center;
-            margin-top:15px;
-            font-weight:bold;
+        .mensaje-error {
+            color: red;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
         }
     </style>
 
@@ -77,7 +77,7 @@
 
     <h2>Registro de Aprendices</h2>
 
-    <!-- Formulario HTML que envía los datos al Servlet usando POST -->
+    <%-- Formulario HTML que envía los datos al Servlet mediante POST --%>
     <form action="registrar" method="post">
 
         <input
@@ -110,11 +110,12 @@
 
     </form>
 
-    <%-- Mostrar mensajes de éxito o error --%>
+    <%-- Obtiene el parámetro enviado por el Servlet --%>
     <%
-        String mensaje=request.getParameter("mensaje");
+        String mensaje = request.getParameter("mensaje");
 
-        if("ok".equals(mensaje)){
+        // Muestra el mensaje cuando el registro fue exitoso.
+        if ("ok".equals(mensaje)) {
     %>
 
     <div class="mensaje-ok">
@@ -123,10 +124,9 @@
 
     <%
         }
-    %>
 
-    <%
-        if("error".equals(mensaje)){
+        // Muestra el mensaje cuando ocurrió un error.
+        if ("error".equals(mensaje)) {
     %>
 
     <div class="mensaje-error">
