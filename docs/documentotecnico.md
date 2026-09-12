@@ -1,8 +1,8 @@
 &#x20;Documento Técnico
 
-&#x20;GA8-220501096-AA1-EV01
+&#x20;GA8-220501096-AA1-EV02
 
-&#x20;Desarrollo de software a partir de la integración de sus módulos componentes
+&#x20;Módulos integrados
 
 
 
@@ -54,6 +54,29 @@ Desarrollar e integrar los módulos componentes de una aplicación web para el r
 
 \---
 
+- Requisitos del módulo
+Requisitos funcionales
+Código	Requisito
+RF01	El sistema debe permitir registrar un aprendiz mediante un formulario web.
+RF02	El formulario debe permitir ingresar nombre, apellido, correo electrónico y teléfono.
+RF03	El sistema debe recibir los datos mediante una solicitud HTTP POST.
+RF04	El Servlet debe procesar los datos recibidos y crear un objeto Aprendiz.
+RF05	El sistema debe almacenar los datos del aprendiz en la tabla aprendiz de MySQL.
+RF06	El sistema debe informar al usuario si el registro fue guardado correctamente o si ocurrió un error.
+RF07	El proyecto debe contar con pruebas automatizadas para verificar componentes principales.
+Requisitos no funcionales
+Código	Requisito
+RNF01	El proyecto debe utilizar Java 17 como versión de compilación.
+RNF02	La aplicación debe poder desplegarse como archivo WAR en Apache Tomcat.
+RNF03	La aplicación debe utilizar MySQL como sistema gestor de base de datos.
+RNF04	La conexión entre Java y MySQL debe realizarse mediante JDBC.
+RNF05	Las dependencias y el proceso de compilación deben gestionarse mediante Maven.
+RNF06	Las pruebas automatizadas deben utilizar JUnit 5.
+RNF07	El código fuente debe mantenerse mediante Git y un repositorio remoto en GitHub.
+RNF08	El proyecto debe mantener separación de responsabilidades entre modelo, vista, controlador y acceso a datos.
+
+
+\---
 
 
 3\. Descripción general del sistema
@@ -308,6 +331,104 @@ La aplicación utiliza una base de datos MySQL denominada `aprendizweb`.
 
 La información de los aprendices se almacena en la tabla `aprendiz`.
 
+
+
+Entradas y salidas del módulo
+Entradas
+
+Los datos ingresados por el usuario desde index.jsp son:
+
+Campo	     Tipo	    Descripción
+nombre	    Texto	 Nombre del aprendiz
+apellido	Texto	 Apellido del aprendiz
+correo	    Texto	 Correo electrónico
+telefono	Texto	 Número telefónico
+
+Estos datos son enviados mediante una solicitud HTTP POST al endpoint:
+
+/registrar
+Procesamiento
+
+AprendizServlet recibe los parámetros enviados, crea un objeto Aprendiz y lo entrega a AprendizDAO.
+
+El DAO utiliza JDBC y PreparedStatement para ejecutar la operación de inserción en MySQL.
+
+Salidas
+
+El módulo produce dos resultados principales:
+
+Registro exitoso:
+
+Registro guardado correctamente
+
+Error durante el registro:
+
+Error al guardar el registro
+
+Además, cuando el registro es exitoso, los datos quedan almacenados en:
+
+Base de datos: aprendizweb
+Tabla: aprendiz
+
+
+##  Componentes del módulo
+
+El módulo de registro de aprendices está compuesto por los siguientes componentes:
+
+###  Interfaz web — `index.jsp`
+
+Presenta el formulario mediante el cual el usuario ingresa los datos del aprendiz.
+
+**Entrada:** nombre, apellido, correo y teléfono.
+
+**Salida:** envío de los datos mediante una solicitud HTTP POST al Servlet.
+
+###  Controlador — `AprendizServlet.java`
+
+Recibe y procesa la información enviada desde el formulario.
+
+Sus principales funciones son:
+
+- Recibir los parámetros enviados.
+- Crear un objeto `Aprendiz`.
+- Asignar los datos recibidos al objeto.
+- Solicitar al DAO el almacenamiento del registro.
+- Informar al usuario el resultado de la operación.
+
+###  Modelo — `Aprendiz.java`
+
+Representa los datos de un aprendiz dentro de la aplicación.
+
+Contiene los atributos:
+
+- `nombre`
+- `apellido`
+- `correo`
+- `telefono`
+
+También proporciona métodos `get` y `set` para administrar estos datos.
+
+###  Acceso a datos — `AprendizDAO.java`
+
+Se encarga de realizar la operación de almacenamiento en la base de datos.
+
+Utiliza JDBC y `PreparedStatement` para ejecutar la sentencia SQL de inserción.
+
+###  Conexión — `Conexion.java`
+
+Establece la conexión entre la aplicación Java y la base de datos MySQL mediante JDBC.
+
+###  Base de datos — MySQL
+
+Almacena permanentemente la información registrada.
+
+La aplicación utiliza la base de datos `aprendizweb` y la tabla `aprendiz`.
+
+###  Pruebas — JUnit 5
+
+Permite verificar el funcionamiento de los componentes principales mediante pruebas automatizadas.
+
+Se cuenta con pruebas para el modelo `Aprendiz` y para el acceso a datos mediante `AprendizDAOTest`.
 
 
 \---
@@ -663,7 +784,39 @@ Como resultado, se obtuvo una aplicación web funcional capaz de recibir informa
 
 16\\. Estado actual del proyecto
 
+Despliegue y archivo compilado
 
+La aplicación AprendizWeb se empaqueta mediante Maven como un archivo WAR para su ejecución en Apache Tomcat.
+
+### Archivo compilado
+
+El archivo generado durante el proceso de compilación es:
+
+`target/AprendizWeb.war`
+
+Este archivo fue generado mediante el comando:
+
+-text
+mvn clean package
+
+El proceso de compilación finalizó correctamente con el resultado:
+
+BUILD SUCCESS
+Servidor de despliegue
+
+La aplicación fue desplegada en:
+
+Apache Tomcat 10.1.57
+
+El archivo AprendizWeb.war fue copiado al directorio webapps del servidor para realizar el despliegue.
+
+URL de acceso
+
+La aplicación puede ser accedida localmente mediante:
+
+http://localhost:8080/AprendizWeb/
+
+Esta URL corresponde al entorno local de desarrollo y pruebas. No corresponde a un servidor público en Internet.
 
 El proyecto se encuentra funcional y cuenta con:
 
@@ -695,4 +848,141 @@ El proyecto se encuentra funcional y cuenta con:
 
 \\\*\\\*Mensaje:\\\*\\\* `Agrega pruebas unitarias y mejora configuracion Maven`
 
+Configuración del servidor y base de datos
 
+
+\---
+
+
+--- 17 Configuración de MySQL
+
+El proyecto utiliza MySQL como sistema gestor de base de datos.
+
+La conexión de la aplicación se realiza mediante JDBC y utiliza los siguientes parámetros de configuración:
+
+| Parámetro | Configuración |
+|---|---|
+| Servidor | `localhost` |
+| Puerto | `3306` |
+| Base de datos | `aprendizweb` |
+| Usuario | `root` |
+| Tabla principal | `aprendiz` |
+| Driver | `com.mysql.cj.jdbc.Driver` |
+
+Por seguridad, la contraseña utilizada para la conexión no se incluye en este documento.
+
+La clase `Conexion.java` es responsable de establecer la conexión con MySQL, mientras que `AprendizDAO.java` utiliza dicha conexión para realizar las operaciones de persistencia.
+
+- 17.1 Configuración de Apache Tomcat
+
+El proyecto se ejecuta mediante Apache Tomcat 10.1.57.
+
+La aplicación se empaqueta como archivo WAR y se despliega dentro del directorio `webapps` de Tomcat.
+
+La aplicación utiliza el puerto HTTP `8080`.
+
+La URL local de acceso es:
+
+`http://localhost:8080/AprendizWeb/`
+
+Durante la prueba de despliegue se verificó que Tomcat iniciara correctamente y que la aplicación pudiera ser cargada desde el navegador.
+
+- 17.2 Entorno de desarrollo
+
+El proyecto utiliza:
+
+- Java 17 como versión de compilación.
+- Maven para la gestión del proyecto y compilación.
+- MySQL para la persistencia de datos.
+- Apache Tomcat 10.1.57 como servidor.
+- Git y GitHub para el control de versiones.
+- JUnit 5 para las pruebas automatizadas.
+
+- 17.3 Entorno de pruebas
+
+Las pruebas se realizaron en el entorno local utilizando Maven y JUnit 5.
+
+También se verificó manualmente el flujo de registro mediante el navegador y se confirmó posteriormente la persistencia del registro en la base de datos MySQL.
+
+El resultado de las pruebas automatizadas fue:
+
+`Tests run: 5, Failures: 0, Errors: 0, Skipped: 0`
+
+`BUILD SUCCESS`
+
+
+\---
+
+
+18. Manual técnico de instalación y ejecución
+
+- 18.1 Requisitos previos
+
+Para ejecutar AprendizWeb se requiere tener instalado:
+
+- Java 17.
+- Maven.
+- MySQL.
+- Apache Tomcat 10.1.57.
+- Git, si se desea obtener el proyecto desde el repositorio.
+
+- 18.2 Preparación de la base de datos
+
+1. Iniciar el servicio de MySQL.
+2. Crear o disponer de la base de datos `aprendizweb`.
+3. Verificar que exista la tabla `aprendiz`.
+4. Comprobar que las credenciales configuradas en `Conexion.java` permitan establecer la conexión.
+
+- 18.3 Compilación del proyecto
+
+Desde la carpeta raíz del proyecto ejecutar:
+
+```text
+mvn clean package
+
+Si el proceso termina correctamente, Maven genera:
+
+target/AprendizWeb.war
+18.4 Despliegue en Tomcat
+Detener Tomcat si se encuentra ejecutándose.
+Copiar AprendizWeb.war al directorio webapps de Apache Tomcat.
+Iniciar Tomcat mediante startup.bat.
+Esperar a que el servidor complete su proceso de inicio.
+Abrir la aplicación desde el navegador.
+18.5 Acceso a la aplicación
+
+La aplicación se encuentra disponible en el entorno local mediante:
+
+http://localhost:8080/AprendizWeb/
+18.6 Registro de un aprendiz
+Abrir la URL de la aplicación.
+Ingresar nombre, apellido, correo y teléfono.
+Seleccionar la opción de registrar.
+El Servlet procesa la información.
+El DAO realiza la operación de almacenamiento.
+El sistema muestra el resultado de la operación.
+Verificar en MySQL que el registro haya sido almacenado en la tabla aprendiz.
+18.7 Ejecución de pruebas
+
+Para ejecutar las pruebas automatizadas desde la carpeta raíz del proyecto utilizar:
+
+mvn clean test
+
+El resultado esperado es:
+
+Tests run: 5
+Failures: 0
+Errors: 0
+Skipped: 0
+BUILD SUCCESS
+19.8 Verificación del funcionamiento
+
+La instalación y ejecución se consideran correctas cuando:
+
+Tomcat inicia sin errores.
+La aplicación carga correctamente.
+El formulario permite ingresar información.
+El registro es procesado por el Servlet.
+El DAO puede comunicarse con MySQL.
+El registro aparece en la tabla aprendiz.
+Las pruebas automatizadas terminan sin fallos ni errores.
